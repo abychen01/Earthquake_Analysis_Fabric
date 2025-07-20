@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Environment",
+    "displayName": "reverse_geocoder",
+    "description": "Environment"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "d331beb7-3c11-aa12-415e-b81ff56b5f12"
+  }
+}

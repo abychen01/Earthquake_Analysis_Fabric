@@ -1,0 +1,107 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "811b4ded-0d94-9d4f-416b-94427475b632",
+          "workspaceId": "00000000-0000-0000-0000-000000000000"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Bronze",
+        "dependsOn": []
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "74adcff1-98d1-b648-4e90-e238979299f9",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "bronze_lh": {
+              "value": {
+                "value": "@json(activity('Bronze').output.result.exitValue).bronze_lh",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "silver_lh": {
+              "value": {
+                "value": "@json(activity('Bronze').output.result.exitValue).silver_lh",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "gold_lh": {
+              "value": {
+                "value": "@json(activity('Bronze').output.result.exitValue).gold_lh",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Silver",
+        "dependsOn": [
+          {
+            "activity": "Bronze",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "72a5866c-e2d3-9833-4023-ca424dda7af8",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "silver_lh": {
+              "value": {
+                "value": "@json(activity('Silver').output.result.exitValue).silver_lh",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "gold_lh": {
+              "value": {
+                "value": "@json(activity('Silver').output.result.exitValue).gold_lh",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Gold",
+        "dependsOn": [
+          {
+            "activity": "Silver",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

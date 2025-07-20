@@ -1,0 +1,4 @@
+dependencies:
+  - pip:
+      - pycountry==24.6.1
+      - reverse-geocoder==1.5.1

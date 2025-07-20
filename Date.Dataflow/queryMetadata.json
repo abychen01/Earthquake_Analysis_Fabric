@@ -1,0 +1,27 @@
+{
+  "formatVersion": "202502",
+  "computeEngineSettings": {},
+  "name": "Date",
+  "queryGroups": [],
+  "documentLocale": "en-US",
+  "queriesMetadata": {
+    "Query": {
+      "queryId": "c83d2088-d8cc-4568-9de9-937d5ab402fb",
+      "queryName": "Query",
+      "loadEnabled": false
+    },
+    "Query_DataDestination": {
+      "queryId": "ca93861d-4cb8-48f7-9515-85c878c88546",
+      "queryName": "Query_DataDestination",
+      "isHidden": true,
+      "loadEnabled": false
+    }
+  },
+  "connections": [
+    {
+      "path": "Lakehouse",
+      "kind": "Lakehouse",
+      "connectionId": "{\"ClusterId\":\"fd9450ed-e905-4202-a7a7-8b6159a3f846\",\"DatasourceId\":\"120dd71f-5839-4ef0-980a-07cbce19a91c\"}"
+    }
+  ]
+}
