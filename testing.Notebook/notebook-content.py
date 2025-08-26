@@ -28,9 +28,9 @@
 
 # CELL ********************
 
-dfg = spark.read.table("Gold_LH.Gold_data")
-dfs = spark.read.table("Silver_LH.Silver_data")
-dfb = spark.read.table("Bronze_LH.bronze_data")
+lists = [
+    "gold_data", "Date"
+]   
 
 # METADATA ********************
 
@@ -41,43 +41,36 @@ dfb = spark.read.table("Bronze_LH.bronze_data")
 
 # CELL ********************
 
-display(dfb)
+from py4j.java_gateway import java_import
+from pyspark.sql import SparkSession
 
-# METADATA ********************
+lists = ["gold_data", "Date"]
 
-# META {
-# META   "language": "python",
-# META   "language_group": "synapse_pyspark"
-# META }
+for table_name in lists:
+    # Read table and coalesce to 1 partition for single output file
+    df = spark.read.table(table_name).coalesce(1)
+    
+    # Temporary directory path
+    temp_dir = f"Files/{table_name}_temp"
+    final_path = f"Files/{table_name}.csv"
 
-# CELL ********************
+    # Save as CSV to temp directory
+    df.write.mode("overwrite").option("header", True).csv(temp_dir)
 
-display(dfs)
+    # Get Spark's Hadoop FileSystem
+    fs = spark._jvm.org.apache.hadoop.fs.FileSystem.get(spark._jsc.hadoopConfiguration())
+    path = spark._jvm.org.apache.hadoop.fs.Path(temp_dir)
 
-# METADATA ********************
+    # Find part file and rename
+    files = fs.listStatus(path)
+    for file in files:
+        name = file.getPath().getName()
+        if name.startswith("part-") and name.endswith(".csv"):
+            fs.rename(file.getPath(), spark._jvm.org.apache.hadoop.fs.Path(final_path))
+            break
 
-# META {
-# META   "language": "python",
-# META   "language_group": "synapse_pyspark"
-# META }
-
-# CELL ********************
-
-from pyspark.sql.functions import desc
-from datetime import date, timedelta, datetime
-
-display(dfg.filter(dfg.event_date == date.today() - timedelta(1)).sort(desc(dfg.event_time)))
-
-# METADATA ********************
-
-# META {
-# META   "language": "python",
-# META   "language_group": "synapse_pyspark"
-# META }
-
-# CELL ********************
-
-print(date.today() - timedelta(1))
+    # Delete temp directory
+    fs.delete(path, True)
 
 # METADATA ********************
 

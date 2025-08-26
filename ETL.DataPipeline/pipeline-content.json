@@ -9,7 +9,7 @@
         },
         "policy": {
           "timeout": "0.12:00:00",
-          "retry": 0,
+          "retry": 2,
           "retryIntervalInSeconds": 30,
           "secureInput": false,
           "secureOutput": false
@@ -48,7 +48,7 @@
         },
         "policy": {
           "timeout": "0.12:00:00",
-          "retry": 0,
+          "retry": 2,
           "retryIntervalInSeconds": 30,
           "secureInput": false,
           "secureOutput": false
@@ -87,7 +87,7 @@
         },
         "policy": {
           "timeout": "0.12:00:00",
-          "retry": 0,
+          "retry": 2,
           "retryIntervalInSeconds": 30,
           "secureInput": false,
           "secureOutput": false
@@ -96,6 +96,29 @@
         "dependsOn": [
           {
             "activity": "Silver",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "a6efb0fd-3c8f-846a-46a2-a28936fa32a6",
+          "workspaceId": "00000000-0000-0000-0000-000000000000"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "AWS RDS sync",
+        "dependsOn": [
+          {
+            "activity": "Gold",
             "dependencyConditions": [
               "Succeeded"
             ]
