@@ -11,7 +11,7 @@
       "loadEnabled": false
     },
     "Query_DataDestination": {
-      "queryId": "ca93861d-4cb8-48f7-9515-85c878c88546",
+      "queryId": "f5170100-3fda-41c0-b88c-c52cf55d093c",
       "queryName": "Query_DataDestination",
       "isHidden": true,
       "loadEnabled": false
@@ -21,7 +21,7 @@
     {
       "path": "Lakehouse",
       "kind": "Lakehouse",
-      "connectionId": "{\"ClusterId\":\"fd9450ed-e905-4202-a7a7-8b6159a3f846\",\"DatasourceId\":\"120dd71f-5839-4ef0-980a-07cbce19a91c\"}"
+      "connectionId": "{\"ClusterId\":\"fd9450ed-e905-4202-a7a7-8b6159a3f846\",\"DatasourceId\":\"c0819bcc-9ecc-4b97-8a9c-68355c20079b\"}"
     }
   ]
 }

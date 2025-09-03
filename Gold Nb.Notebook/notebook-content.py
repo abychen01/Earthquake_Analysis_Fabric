@@ -8,18 +8,15 @@
 # META   },
 # META   "dependencies": {
 # META     "lakehouse": {
-# META       "default_lakehouse": "3d1d5508-871a-406a-ab0d-d72e69a60f51",
+# META       "default_lakehouse": "2f73d050-1f8b-4e9d-bd8e-6640ac335a1c",
 # META       "default_lakehouse_name": "Gold_LH",
-# META       "default_lakehouse_workspace_id": "b1bc2e70-4b73-4f0d-b93c-d90884d68103",
+# META       "default_lakehouse_workspace_id": "8be724d1-75c7-4a15-9b26-dc6747947d8b",
 # META       "known_lakehouses": [
 # META         {
-# META           "id": "3d1d5508-871a-406a-ab0d-d72e69a60f51"
+# META           "id": "2f73d050-1f8b-4e9d-bd8e-6640ac335a1c"
 # META         },
 # META         {
-# META           "id": "75217bdf-bcf2-473e-a349-eb69f5f5a989"
-# META         },
-# META         {
-# META           "id": "e90bbc97-3dcd-42db-9c1c-80268d3dd954"
+# META           "id": "a389b12c-e773-475f-91eb-e98c19bc40da"
 # META         }
 # META       ]
 # META     },
@@ -51,6 +48,18 @@ from pyspark.sql.functions import when, col, udf
 from pyspark.sql.types import StringType, StructType, StructField
 from datetime import date, timedelta
 
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
+
+df = spark.sql("SELECT * FROM Gold_LH.gold_data LIMIT 1000")
+display(df)
 
 # METADATA ********************
 

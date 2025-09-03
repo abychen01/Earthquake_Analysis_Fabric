@@ -8,12 +8,12 @@
 # META   },
 # META   "dependencies": {
 # META     "lakehouse": {
-# META       "default_lakehouse": "3d1d5508-871a-406a-ab0d-d72e69a60f51",
+# META       "default_lakehouse": "2f73d050-1f8b-4e9d-bd8e-6640ac335a1c",
 # META       "default_lakehouse_name": "Gold_LH",
-# META       "default_lakehouse_workspace_id": "b1bc2e70-4b73-4f0d-b93c-d90884d68103",
+# META       "default_lakehouse_workspace_id": "8be724d1-75c7-4a15-9b26-dc6747947d8b",
 # META       "known_lakehouses": [
 # META         {
-# META           "id": "3d1d5508-871a-406a-ab0d-d72e69a60f51"
+# META           "id": "2f73d050-1f8b-4e9d-bd8e-6640ac335a1c"
 # META         }
 # META       ]
 # META     }
@@ -24,6 +24,19 @@
 
 import pyodbc
 from pyspark.sql.types import StructType, StringType, StructType
+from pyspark.sql.functions import col, desc, asc
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
+
+df = spark.read.table("gold_data")
+display(df.groupBy(col("event_date")).count())
 
 # METADATA ********************
 
@@ -42,9 +55,9 @@ password = spark.read.parquet("Files/creds").collect()[0]['password']
 
 conn_str_master = (
             f"DRIVER={{ODBC Driver 18 for SQL Server}};"
-            f"SERVER=fabric-rds-sql-server.cxm8ga0awaka.eu-north-1.rds.amazonaws.com,1433;"
+            f"SERVER=tcp:myfreesqldbserver66.database.windows.net,1433;"
             f"DATABASE=master;"
-            f"UID=admin;"
+            f"UID=admin2;"
             f"PWD={password};"
             f"Encrypt=yes;"
             f"TrustServerCertificate=yes;"
@@ -53,14 +66,15 @@ conn_str_master = (
         
 conn_str = (
             f"DRIVER={{ODBC Driver 18 for SQL Server}};"
-            f"SERVER=fabric-rds-sql-server.cxm8ga0awaka.eu-north-1.rds.amazonaws.com,1433;"
+            f"SERVER=tcp:myfreesqldbserver66.database.windows.net,1433;"
             f"DATABASE={db};"
-            f"UID=admin;"
+            f"UID=admin2;"
             f"PWD={password};"
             f"Encrypt=yes;"
             f"TrustServerCertificate=yes;"
             f"Connect Timeout=30;"
         )
+
 
 # METADATA ********************
 
@@ -167,14 +181,18 @@ for table in table_list:
 
 # CELL ********************
 
-jdbc_url = f"jdbc:sqlserver://fabric-rds-sql-server.cxm8ga0awaka.eu-north-1.rds.amazonaws.com:1433;\
-            databaseName={db};encrypt=true;trustServerCertificate=true"
+jdbc_url = "jdbc:sqlserver://myfreesqldbserver66.database.windows.net:1433;" \
+           f"databaseName={db};" \
+           "encrypt=true;" \
+           "trustServerCertificate=false;" \
+           "hostNameInCertificate=*.database.windows.net;" \
+           "loginTimeout=30;"
+
 jdbc_properties = {
-    "user": "admin",
+    "user": "admin2",
     "password": password,
     "driver": "com.microsoft.sqlserver.jdbc.SQLServerDriver"
 }
-
 
 for table in table_list:
 

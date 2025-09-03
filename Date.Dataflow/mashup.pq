@@ -1,6 +1,6 @@
 [StagingDefinition = [Kind = "FastCopy"]]
 section Section1;
-[DataDestinations = {[Definition = [Kind = "Reference", QueryName = "Query_DataDestination", IsNewTarget = true], Settings = [Kind = "Manual", AllowCreation = true, ColumnSettings = [Mappings = {[SourceColumnName = "Date", DestinationColumnName = "Date"], [SourceColumnName = "Year", DestinationColumnName = "Year"], [SourceColumnName = "Quarter", DestinationColumnName = "Quarter"], [SourceColumnName = "Month", DestinationColumnName = "Month"], [SourceColumnName = "Week of year", DestinationColumnName = "Week of year"], [SourceColumnName = "Day", DestinationColumnName = "Day"], [SourceColumnName = "Day name", DestinationColumnName = "Day name"]}], DynamicSchema = true, UpdateMethod = [Kind = "Replace"], TypeSettings = [Kind = "Table"]]]}]
+[DataDestinations = {[Definition = [Kind = "Reference", QueryName = "Query_DataDestination", IsNewTarget = true], Settings = [Kind = "Automatic", TypeSettings = [Kind = "Table"]]]}]
 shared Query = let
   Source = List.Dates(#date(2025,1,1),1460, #duration(1,0,0,0)),
   #"Converted to table" = Table.FromList(Source, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
@@ -19,8 +19,8 @@ in
   #"Changed column type 2";
 shared Query_DataDestination = let
   Pattern = Lakehouse.Contents([CreateNavigationProperties = false, EnableFolding = false]),
-  Navigation_1 = Pattern{[workspaceId = "b1bc2e70-4b73-4f0d-b93c-d90884d68103"]}[Data],
-  Navigation_2 = Navigation_1{[lakehouseId = "3d1d5508-871a-406a-ab0d-d72e69a60f51"]}[Data],
+  Navigation_1 = Pattern{[workspaceId = "8be724d1-75c7-4a15-9b26-dc6747947d8b"]}[Data],
+  Navigation_2 = Navigation_1{[lakehouseId = "2f73d050-1f8b-4e9d-bd8e-6640ac335a1c"]}[Data],
   TableNavigation = Navigation_2{[Id = "Date", ItemKind = "Table"]}?[Data]?
 in
   TableNavigation;

@@ -8,12 +8,12 @@
 # META   },
 # META   "dependencies": {
 # META     "lakehouse": {
-# META       "default_lakehouse": "3d1d5508-871a-406a-ab0d-d72e69a60f51",
+# META       "default_lakehouse": "2f73d050-1f8b-4e9d-bd8e-6640ac335a1c",
 # META       "default_lakehouse_name": "Gold_LH",
-# META       "default_lakehouse_workspace_id": "b1bc2e70-4b73-4f0d-b93c-d90884d68103",
+# META       "default_lakehouse_workspace_id": "8be724d1-75c7-4a15-9b26-dc6747947d8b",
 # META       "known_lakehouses": [
 # META         {
-# META           "id": "3d1d5508-871a-406a-ab0d-d72e69a60f51"
+# META           "id": "2f73d050-1f8b-4e9d-bd8e-6640ac335a1c"
 # META         }
 # META       ]
 # META     },
@@ -39,7 +39,8 @@ def safe_float(value):
         return None
 
 dates = [
-    "2025-01-01", "2025-02-01", "2025-03-01", "2025-04-01", "2025-05-01", "2025-06-01", "2025-07-01", "2025-07-04"
+    "2025-01-01", "2025-02-01", "2025-03-01", "2025-04-01", "2025-05-01", "2025-06-01", "2025-07-01",
+    "2025-08-01", "2025-08-31"
 ]
 schema = StructType([
                 StructField("id", StringType(), True),
@@ -137,6 +138,28 @@ df = df.drop("time", "updated")
 
 # CELL ********************
 
+pip install pycountry
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
+
+pip install reverse_geocoder
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
+
 import reverse_geocoder as rg
 import pycountry as pyc
 
@@ -177,6 +200,7 @@ df = (df
       .withColumn("Country_Code", col("location_data.Country"))
         .withColumn("State", col("location_data.State"))
       .drop("location_data"))
+      
 df = df.withColumn("Country", country_name_udf(col("Country_Code")))
 
 
@@ -189,7 +213,7 @@ df = df.withColumn("Country", country_name_udf(col("Country_Code")))
 
 # CELL ********************
 
-df.write.format("delta").mode("append").saveAsTable("Gold_LH.Gold_data")
+df.write.format("delta").mode("overwrite").saveAsTable("Gold_LH.Gold_data")
 
 # METADATA ********************
 
@@ -200,6 +224,9 @@ df.write.format("delta").mode("append").saveAsTable("Gold_LH.Gold_data")
 
 # CELL ********************
 
+
+df = spark.read.table("gold_data")
+display(df.groupBy(col("event_date")).count())
 
 # METADATA ********************
 
