@@ -2,6 +2,10 @@
 
 This repository contains a data engineering project that fetches earthquake data from the USGS Earthquake API, processes it through a Bronze-Silver-Gold medallion architecture using Microsoft Fabric notebooks, and stores the results in Delta tables. The project also includes a historical data notebook and a date dimension table created with Fabric Dataflow Gen 2.
 
+[Power BI report](https://app.fabric.microsoft.com/view?r=eyJrIjoiMDcxZjg3YWYtY2EzMS00NjYyLWFlMzktODVmYzQwNTYyZDhkIiwidCI6IjZkYWRkOGM5LTMxMGEtNGE2Ni05MzRhLWQ5MGI1OTk5YjViMCJ9)
+
+## Table of Contents
+
 ## Project Overview
 
 The project is designed to collect, transform, and enrich earthquake data for analysis. It follows a medallion architecture:
