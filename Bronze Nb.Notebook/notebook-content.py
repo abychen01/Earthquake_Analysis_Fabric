@@ -128,11 +128,11 @@ parsed_data = json.loads(json_data)
 flat_data = [
     {
         "id": item.get("id"),
-        "longitude": float(item.get("geometry",{}).get("coordinates",[None,None,None])[0]),
-        "latitude": float(item.get("geometry",{}).get("coordinates",[None,None,None])[1]),
-        "elevation": float(item.get("geometry",{}).get("coordinates",[None,None,None])[2]),
+        "longitude": float(item.get("geometry",{}).get("coordinates",[None,None,None])[0] or 0.0),
+        "latitude": float(item.get("geometry",{}).get("coordinates",[None,None,None])[1] or 0.0),
+        "elevation": float(item.get("geometry",{}).get("coordinates",[None,None,None])[2] or 0.0),
         "title": item.get("properties",{}).get("title",None),
-        "magnitude": float(item.get("properties",{}).get("mag",0.0)),
+        "magnitude": float(item.get("properties",{}).get("mag") or 0.0),
         "place_description": item.get("properties",{}).get("place",None),
         "sig": item.get("properties",{}).get("sig",None),
         "magType": item.get("properties",{}).get("magType",None),

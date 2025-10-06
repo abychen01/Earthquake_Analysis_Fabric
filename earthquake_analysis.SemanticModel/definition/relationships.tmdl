@@ -1,0 +1,4 @@
+relationship c757c67f-ba70-a4e8-0376-1b0c6b6b0a7a
+	fromColumn: eq_data.event_date
+	toColumn: Date.Date
+
