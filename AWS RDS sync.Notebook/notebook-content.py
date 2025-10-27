@@ -8,12 +8,15 @@
 # META   },
 # META   "dependencies": {
 # META     "lakehouse": {
-# META       "default_lakehouse": "2f73d050-1f8b-4e9d-bd8e-6640ac335a1c",
+# META       "default_lakehouse": "0a33465b-6efe-413c-a8ab-aa23bf42e2f9",
 # META       "default_lakehouse_name": "Gold_LH",
-# META       "default_lakehouse_workspace_id": "8be724d1-75c7-4a15-9b26-dc6747947d8b",
+# META       "default_lakehouse_workspace_id": "566db19f-9edd-49ca-a404-7bde0e4bd305",
 # META       "known_lakehouses": [
 # META         {
-# META           "id": "2f73d050-1f8b-4e9d-bd8e-6640ac335a1c"
+# META           "id": "a2f1d805-1016-46b7-8712-028624cbdc9c"
+# META         },
+# META         {
+# META           "id": "0a33465b-6efe-413c-a8ab-aa23bf42e2f9"
 # META         }
 # META       ]
 # META     }
@@ -22,9 +25,11 @@
 
 # CELL ********************
 
-import pyodbc
+import pyodbc, os
 from pyspark.sql.types import StructType, StringType, StructType
 from pyspark.sql.functions import col, desc, asc
+from azure.identity import DefaultAzureCredential
+from azure.keyvault.secrets import SecretClient
 
 # METADATA ********************
 
@@ -51,14 +56,25 @@ tables_df = spark.sql("SHOW TABLES")
 table_list = [row['tableName'] for row in tables_df.collect()]
 db = "earthquake_analysis"
 
-password = spark.read.parquet("Files/creds").collect()[0]['password']
+df_creds = spark.read.parquet('Files/creds')
+
+os.environ["AZURE_CLIENT_ID"] = df_creds.collect()[0]["AZURE_CLIENT_ID"]
+os.environ["AZURE_TENANT_ID"] = df_creds.collect()[0]["AZURE_TENANT_ID"]
+os.environ["AZURE_CLIENT_SECRET"] = df_creds.collect()[0]["AZURE_CLIENT_SECRET"]
+
+
+vault_url = "https://vaultforfabric.vault.azure.net/"
+credential = DefaultAzureCredential()
+client = SecretClient(vault_url=vault_url, credential=credential)
+
+server_password = client.get_secret("sql-server-password").value
 
 conn_str_master = (
             f"DRIVER={{ODBC Driver 18 for SQL Server}};"
             f"SERVER=tcp:myfreesqldbserver66.database.windows.net,1433;"
             f"DATABASE=master;"
             f"UID=admin2;"
-            f"PWD={password};"
+            f"PWD={server_password};"
             f"Encrypt=yes;"
             f"TrustServerCertificate=yes;"
             f"Connect Timeout=30;"
@@ -69,7 +85,7 @@ conn_str = (
             f"SERVER=tcp:myfreesqldbserver66.database.windows.net,1433;"
             f"DATABASE={db};"
             f"UID=admin2;"
-            f"PWD={password};"
+            f"PWD={server_password};"
             f"Encrypt=yes;"
             f"TrustServerCertificate=yes;"
             f"Connect Timeout=30;"
