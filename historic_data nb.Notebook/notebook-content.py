@@ -8,12 +8,12 @@
 # META   },
 # META   "dependencies": {
 # META     "lakehouse": {
-# META       "default_lakehouse": "2f73d050-1f8b-4e9d-bd8e-6640ac335a1c",
+# META       "default_lakehouse": "0a33465b-6efe-413c-a8ab-aa23bf42e2f9",
 # META       "default_lakehouse_name": "Gold_LH",
-# META       "default_lakehouse_workspace_id": "8be724d1-75c7-4a15-9b26-dc6747947d8b",
+# META       "default_lakehouse_workspace_id": "566db19f-9edd-49ca-a404-7bde0e4bd305",
 # META       "known_lakehouses": [
 # META         {
-# META           "id": "2f73d050-1f8b-4e9d-bd8e-6640ac335a1c"
+# META           "id": "0a33465b-6efe-413c-a8ab-aa23bf42e2f9"
 # META         }
 # META       ]
 # META     },
@@ -22,16 +22,6 @@
 # META       "workspaceId": "00000000-0000-0000-0000-000000000000"
 # META     }
 # META   }
-# META }
-
-# CELL ********************
-
-
-# METADATA ********************
-
-# META {
-# META   "language": "python",
-# META   "language_group": "synapse_pyspark"
 # META }
 
 # CELL ********************
@@ -50,7 +40,7 @@ def safe_float(value):
 
 dates = [
     "2025-01-01", "2025-02-01", "2025-03-01", "2025-04-01", "2025-05-01", "2025-06-01", "2025-07-01",
-    "2025-08-01", "2025-08-31"
+    "2025-08-01", "2025-08-31","2025-09-01","2025-09-30","2025-10-01","2025-10-26"
 ]
 schema = StructType([
                 StructField("id", StringType(), True),
@@ -148,7 +138,7 @@ df = df.drop("time", "updated")
 
 # CELL ********************
 
-pip install pycountry
+%pip install pycountry
 
 # METADATA ********************
 
@@ -159,7 +149,7 @@ pip install pycountry
 
 # CELL ********************
 
-pip install reverse_geocoder
+%pip install reverse_geocoder
 
 # METADATA ********************
 
@@ -213,6 +203,17 @@ df = (df
       
 df = df.withColumn("Country", country_name_udf(col("Country_Code")))
 
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
+
+display(df)
 
 # METADATA ********************
 

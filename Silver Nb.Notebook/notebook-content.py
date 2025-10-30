@@ -77,18 +77,6 @@ df2.write.format("delta").mode("overwrite").saveAsTable(silver_lh)
 
 # CELL ********************
 
-df = spark.sql("SELECT * FROM Gold_LH.gold_data LIMIT 1000")
-display(df)
-
-# METADATA ********************
-
-# META {
-# META   "language": "python",
-# META   "language_group": "synapse_pyspark"
-# META }
-
-# CELL ********************
-
 from notebookutils import mssparkutils
 import json
 
