@@ -8,7 +8,7 @@
 # META   },
 # META   "dependencies": {
 # META     "lakehouse": {
-# META       "default_lakehouse": "0a33465b-6efe-413c-a8ab-aa23bf42e2f9",
+# META       "default_lakehouse": "e7d74e70-e9c6-4ccf-ada8-fd053439f5e1",
 # META       "default_lakehouse_name": "Gold_LH",
 # META       "default_lakehouse_workspace_id": "566db19f-9edd-49ca-a404-7bde0e4bd305",
 # META       "known_lakehouses": [
@@ -16,7 +16,7 @@
 # META           "id": "a2f1d805-1016-46b7-8712-028624cbdc9c"
 # META         },
 # META         {
-# META           "id": "0a33465b-6efe-413c-a8ab-aa23bf42e2f9"
+# META           "id": "e7d74e70-e9c6-4ccf-ada8-fd053439f5e1"
 # META         }
 # META       ]
 # META     }
@@ -51,7 +51,7 @@ from azure.keyvault.secrets import SecretClient
 tables_df = spark.sql("SHOW TABLES")
 table_list = [row['tableName'] for row in tables_df.collect()]
 db = "earthquake_analysis"
-
+'''
 df_creds = spark.read.parquet('Files/creds')
 
 os.environ["AZURE_CLIENT_ID"] = df_creds.collect()[0]["AZURE_CLIENT_ID"]
@@ -64,7 +64,9 @@ credential = DefaultAzureCredential()
 client = SecretClient(vault_url=vault_url, credential=credential)
 
 server_password = client.get_secret("sql-server-password").value
+'''
 
+server_password = 'Lonewolf90!!'
 conn_str_master = (
             f"DRIVER={{ODBC Driver 18 for SQL Server}};"
             f"SERVER=tcp:myfreesqldbserver66.database.windows.net,1433;"
@@ -109,15 +111,13 @@ with pyodbc.connect(conn_str_master, autocommit=True) as conn:
             IF NOT EXISTS (SELECT name from sys.databases WHERE name = ?)
                 BEGIN
                 SELECT ? + ' doesnt exists';
-                EXEC('CREATE DATABASE [' + ? + ']')
-                SELECT ? + ' Database created';
                 END
             ELSE
                 BEGIN
                 SELECT ? + ' exist';
                 END
         
-        """,db,db,db,db,db)
+        """,db,db,db)
 
         
         while True:
@@ -205,6 +205,29 @@ for table in table_list:
 
 # CELL ********************
 
+with pyodbc.connect(conn_str, autocommit=True) as conn:
+    with conn.cursor() as cursor:
+        cursor.execute("SELECT TOP(1) event_date FROM gold_data order by event_date desc")
+
+        while True:
+            latest_date = cursor.fetchall()
+            latest_date = latest_date[0][0]
+
+            if result:    
+                print(latest_date)
+            if not cursor.nextset():
+                break
+
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
+
 jdbc_url = "jdbc:sqlserver://myfreesqldbserver66.database.windows.net:1433;" \
            f"databaseName={db};" \
            "encrypt=true;" \
@@ -214,7 +237,7 @@ jdbc_url = "jdbc:sqlserver://myfreesqldbserver66.database.windows.net:1433;" \
 
 jdbc_properties = {
     "user": "admin2",
-    "password": password,
+    "password": server_password,
     "driver": "com.microsoft.sqlserver.jdbc.SQLServerDriver"
 }
 
@@ -222,6 +245,8 @@ for table in table_list:
 
     try:
         df = spark.read.table(table)
+        if table == 'gold_data':
+            df = spark.read.table('gold_data').where(col('event_date') > latest_date)
         if table == "Date":
             df = df.withColumnsRenamed({"Week of year": "week_of_year","Day Name": "day_name"})
 
@@ -233,7 +258,7 @@ for table in table_list:
             .option("password", jdbc_properties["password"]) \
             .option("driver", jdbc_properties["driver"]) \
             .option("batchsize", 1000) \
-            .mode("overwrite") \
+            .mode("append") \
             .save()
         print(f"Successfully wrote data to RDS table '{table}'.")
 
@@ -256,7 +281,7 @@ for table in table_list:
 # CELL ********************
 
 #testing....
-
+'''
 
 for table in table_list:
     
@@ -278,52 +303,7 @@ for table in table_list:
                     break
 
 
-
-
-
-# METADATA ********************
-
-# META {
-# META   "language": "python",
-# META   "language_group": "synapse_pyspark"
-# META }
-
-# CELL ********************
-
-df = spark.sql("SELECT * FROM Gold_LH.gold_data LIMIT 1000")
-display(df)
-
-# METADATA ********************
-
-# META {
-# META   "language": "python",
-# META   "language_group": "synapse_pyspark"
-# META }
-
-# CELL ********************
-
-
-with pyodbc.connect(conn_str, autocommit=True) as conn:
-    with conn.cursor() as cursor:
-        cursor.execute("SELECT TOP(1) event_date + event_time as datetime FROM gold_data")
-
-        
-        while True:
-            result = cursor.fetchall()
-
-            if result:    
-                print(result)
-            if not cursor.nextset():
-                break
-
-# METADATA ********************
-
-# META {
-# META   "language": "python",
-# META   "language_group": "synapse_pyspark"
-# META }
-
-# CELL ********************
+'''
 
 
 # METADATA ********************

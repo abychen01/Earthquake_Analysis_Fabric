@@ -8,12 +8,12 @@
 # META   },
 # META   "dependencies": {
 # META     "lakehouse": {
-# META       "default_lakehouse": "0a33465b-6efe-413c-a8ab-aa23bf42e2f9",
+# META       "default_lakehouse": "e7d74e70-e9c6-4ccf-ada8-fd053439f5e1",
 # META       "default_lakehouse_name": "Gold_LH",
 # META       "default_lakehouse_workspace_id": "566db19f-9edd-49ca-a404-7bde0e4bd305",
 # META       "known_lakehouses": [
 # META         {
-# META           "id": "0a33465b-6efe-413c-a8ab-aa23bf42e2f9"
+# META           "id": "e7d74e70-e9c6-4ccf-ada8-fd053439f5e1"
 # META         }
 # META       ]
 # META     },
@@ -37,11 +37,17 @@ def safe_float(value):
         return float(value)
     except (TypeError, ValueError):
         return None
-
+'''
 dates = [
     "2025-01-01", "2025-02-01", "2025-03-01", "2025-04-01", "2025-05-01", "2025-06-01", "2025-07-01",
     "2025-08-01", "2025-08-31","2025-09-01","2025-09-30","2025-10-01","2025-10-26"
 ]
+'''
+
+dates = [
+    '2025-10-27','2025-11-02'
+]
+
 schema = StructType([
                 StructField("id", StringType(), True),
                 StructField("longitude", DoubleType(), True),
@@ -55,11 +61,18 @@ schema = StructType([
                 StructField("time", LongType(), True),
                 StructField("updated", LongType(), True)
         ])
+
 df = spark.createDataFrame([], schema=schema)
 
-for i in range(7):
+i=0
+j=0
+for i in range(len(dates)):
 
-    j= i + 1
+    j = i + 1
+    print(i,'  ',j)
+
+        
+    print(dates[i], '  ', dates[j])
     url = f"https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime={dates[i]}&endtime={dates[j]}"
 
     try:
@@ -94,11 +107,16 @@ for i in range(7):
 
         df2 = spark.createDataFrame(flat_data, schema=schema)
         df = df.union(df2)
+        
+        if (j==len(dates)-1):
+            print('loop done')
+            break
 
     except requests.exceptions.RequestException as e:
         print(f"Request failed: {e}") 
 
-
+print(df.count())
+display(df)
 
 # METADATA ********************
 
@@ -138,18 +156,7 @@ df = df.drop("time", "updated")
 
 # CELL ********************
 
-%pip install pycountry
-
-# METADATA ********************
-
-# META {
-# META   "language": "python",
-# META   "language_group": "synapse_pyspark"
-# META }
-
-# CELL ********************
-
-%pip install reverse_geocoder
+from pyspark.sql.types import StructType, StructField, IntegerType, DoubleType, StringType, LongType, TimestampType
 
 # METADATA ********************
 
