@@ -8,18 +8,12 @@
 # META   },
 # META   "dependencies": {
 # META     "lakehouse": {
-# META       "default_lakehouse": "0a33465b-6efe-413c-a8ab-aa23bf42e2f9",
+# META       "default_lakehouse": "e7d74e70-e9c6-4ccf-ada8-fd053439f5e1",
 # META       "default_lakehouse_name": "Gold_LH",
 # META       "default_lakehouse_workspace_id": "566db19f-9edd-49ca-a404-7bde0e4bd305",
 # META       "known_lakehouses": [
 # META         {
-# META           "id": "a2f1d805-1016-46b7-8712-028624cbdc9c"
-# META         },
-# META         {
-# META           "id": "0a33465b-6efe-413c-a8ab-aa23bf42e2f9"
-# META         },
-# META         {
-# META           "id": "fe007dfc-4948-4081-9212-d0239e478983"
+# META           "id": "e7d74e70-e9c6-4ccf-ada8-fd053439f5e1"
 # META         }
 # META       ]
 # META     },
@@ -44,16 +38,6 @@ gold_lh = ""
 
 # CELL ********************
 
-
-# METADATA ********************
-
-# META {
-# META   "language": "python",
-# META   "language_group": "synapse_pyspark"
-# META }
-
-# CELL ********************
-
 import reverse_geocoder as rg
 import pycountry as pyc
 
@@ -61,18 +45,6 @@ from pyspark.sql.functions import when, col, udf
 from pyspark.sql.types import StringType, StructType, StructField
 from datetime import date, timedelta
 
-
-# METADATA ********************
-
-# META {
-# META   "language": "python",
-# META   "language_group": "synapse_pyspark"
-# META }
-
-# CELL ********************
-
-df = spark.sql("SELECT * FROM Gold_LH.gold_data LIMIT 1000")
-display(df)
 
 # METADATA ********************
 
