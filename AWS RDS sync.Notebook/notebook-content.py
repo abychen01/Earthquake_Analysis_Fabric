@@ -23,6 +23,10 @@
 # META   }
 # META }
 
+# MARKDOWN ********************
+
+# #### Imports
+
 # CELL ********************
 
 import pyodbc, os
@@ -38,17 +42,9 @@ from azure.keyvault.secrets import SecretClient
 # META   "language_group": "synapse_pyspark"
 # META }
 
-# CELL ********************
+# MARKDOWN ********************
 
-df = spark.read.table("gold_data")
-display(df.groupBy(col("event_date")).count())
-
-# METADATA ********************
-
-# META {
-# META   "language": "python",
-# META   "language_group": "synapse_pyspark"
-# META }
+# #### Declarations
 
 # CELL ********************
 
@@ -99,6 +95,10 @@ conn_str = (
 # META   "language_group": "synapse_pyspark"
 # META }
 
+# MARKDOWN ********************
+
+# #### DB check
+
 # CELL ********************
 
 
@@ -134,6 +134,10 @@ with pyodbc.connect(conn_str_master, autocommit=True) as conn:
 # META   "language": "python",
 # META   "language_group": "synapse_pyspark"
 # META }
+
+# MARKDOWN ********************
+
+# #### Table check
 
 # CELL ********************
 
@@ -195,6 +199,10 @@ for table in table_list:
 # META   "language_group": "synapse_pyspark"
 # META }
 
+# MARKDOWN ********************
+
+# #### Write
+
 # CELL ********************
 
 jdbc_url = "jdbc:sqlserver://myfreesqldbserver66.database.windows.net:1433;" \
@@ -241,6 +249,10 @@ for table in table_list:
 # META   "language_group": "synapse_pyspark"
 # META }
 
+# MARKDOWN ********************
+
+# #### Testing
+
 # CELL ********************
 
 #testing....
@@ -268,6 +280,41 @@ for table in table_list:
 
 
 
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
+
+df = spark.sql("SELECT * FROM Gold_LH.gold_data LIMIT 1000")
+display(df)
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
+
+
+with pyodbc.connect(conn_str, autocommit=True) as conn:
+    with conn.cursor() as cursor:
+        cursor.execute("SELECT TOP(1) event_date + event_time as datetime FROM gold_data")
+
+        
+        while True:
+            result = cursor.fetchall()
+
+            if result:    
+                print(result)
+            if not cursor.nextset():
+                break
 
 # METADATA ********************
 

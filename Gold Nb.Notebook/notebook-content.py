@@ -44,6 +44,16 @@ gold_lh = ""
 
 # CELL ********************
 
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
+
 import reverse_geocoder as rg
 import pycountry as pyc
 
