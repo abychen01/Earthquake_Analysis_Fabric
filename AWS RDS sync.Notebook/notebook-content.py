@@ -13,9 +13,6 @@
 # META       "default_lakehouse_workspace_id": "566db19f-9edd-49ca-a404-7bde0e4bd305",
 # META       "known_lakehouses": [
 # META         {
-# META           "id": "a2f1d805-1016-46b7-8712-028624cbdc9c"
-# META         },
-# META         {
 # META           "id": "e7d74e70-e9c6-4ccf-ada8-fd053439f5e1"
 # META         }
 # META       ]
@@ -51,7 +48,7 @@ from azure.keyvault.secrets import SecretClient
 tables_df = spark.sql("SHOW TABLES")
 table_list = [row['tableName'] for row in tables_df.collect()]
 db = "earthquake_analysis"
-'''
+
 df_creds = spark.read.parquet('Files/creds')
 
 os.environ["AZURE_CLIENT_ID"] = df_creds.collect()[0]["AZURE_CLIENT_ID"]
@@ -64,9 +61,7 @@ credential = DefaultAzureCredential()
 client = SecretClient(vault_url=vault_url, credential=credential)
 
 server_password = client.get_secret("sql-server-password").value
-'''
 
-server_password = 'Lonewolf90!!'
 conn_str_master = (
             f"DRIVER={{ODBC Driver 18 for SQL Server}};"
             f"SERVER=tcp:myfreesqldbserver66.database.windows.net,1433;"
