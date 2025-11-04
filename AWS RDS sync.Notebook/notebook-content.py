@@ -275,6 +275,18 @@ for table in table_list:
 
 # CELL ********************
 
+df = spark.read.table('gold_data').where(col('event_date') == '2025-11-02')
+display(df)
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
+
 #testing....
 '''
 
@@ -299,6 +311,42 @@ for table in table_list:
 
 
 '''
+
+jdbc_url = "jdbc:sqlserver://myfreesqldbserver66.database.windows.net:1433;" \
+           f"databaseName={db};" \
+           "encrypt=true;" \
+           "trustServerCertificate=false;" \
+           "hostNameInCertificate=*.database.windows.net;" \
+           "loginTimeout=30;"
+
+jdbc_properties = {
+    "user": "admin2",
+    "password": server_password,
+    "driver": "com.microsoft.sqlserver.jdbc.SQLServerDriver"
+}
+
+table = 'gold_data'
+try:
+    df = spark.read.table(table)
+    if table == 'gold_data':
+        df = spark.read.table('gold_data').where(col('event_date') == '2025-11-02')
+
+    df.write \
+        .format("jdbc") \
+        .option("url", jdbc_url) \
+        .option("dbtable", table) \
+        .option("user", jdbc_properties["user"]) \
+        .option("password", jdbc_properties["password"]) \
+        .option("driver", jdbc_properties["driver"]) \
+        .option("batchsize", 1000) \
+        .mode("append") \
+        .save()
+    print(f"Successfully wrote data to RDS table '{table}'.")
+
+
+except Exception as e:
+    print(f"Failed to write to RDS: {e}")
+    raise
 
 
 # METADATA ********************

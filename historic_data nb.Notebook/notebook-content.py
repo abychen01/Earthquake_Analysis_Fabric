@@ -45,7 +45,7 @@ dates = [
 '''
 
 dates = [
-    '2025-10-27','2025-11-02'
+    '2025-11-02','2025-11-03'
 ]
 
 schema = StructType([
@@ -231,7 +231,7 @@ display(df)
 
 # CELL ********************
 
-df.write.format("delta").mode("overwrite").saveAsTable("Gold_LH.Gold_data")
+df.write.format("delta").mode("append").saveAsTable("Gold_LH.Gold_data")
 
 # METADATA ********************
 
@@ -244,7 +244,7 @@ df.write.format("delta").mode("overwrite").saveAsTable("Gold_LH.Gold_data")
 
 
 df = spark.read.table("gold_data")
-display(df.groupBy(col("event_date")).count())
+display(df.groupBy(col("event_date")).count().sort(col('event_date')))
 
 # METADATA ********************
 
