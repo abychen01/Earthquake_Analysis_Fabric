@@ -45,6 +45,18 @@ from azure.keyvault.secrets import SecretClient
 
 # CELL ********************
 
+df_creds = spark.read.parquet('Files/creds')
+display(df_creds)
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
+
 tables_df = spark.sql("SHOW TABLES")
 table_list = [row['tableName'] for row in tables_df.collect()]
 db = "earthquake_analysis"
