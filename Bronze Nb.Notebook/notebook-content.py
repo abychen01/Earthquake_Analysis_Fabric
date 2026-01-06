@@ -141,7 +141,7 @@ latest_date = latest_date + timedelta(days=1)
 print(latest_date)
 print(type(latest_date))
 
-end_date = date.today()
+end_date = date.today() - timedelta(days=1)
 print(end_date)
 print(type(end_date))
 
