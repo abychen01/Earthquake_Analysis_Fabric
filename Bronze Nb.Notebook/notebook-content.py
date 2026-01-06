@@ -43,6 +43,10 @@ gold_lh = lh_paths["Gold"]
 
 # CELL ********************
 
+import pyodbc, os
+from azure.identity import DefaultAzureCredential
+from azure.keyvault.secrets import SecretClient
+
 import requests
 # for API requests
 import json
@@ -59,8 +63,36 @@ from datetime import date, timedelta
 
 # CELL ********************
 
-start_date = date.today() - timedelta(1)
-end_date = date.today()
+#temp...
+
+df_creds = spark.read.parquet('Files/creds')
+
+os.environ["AZURE_CLIENT_ID"] = df_creds.collect()[0]["AZURE_CLIENT_ID"]
+os.environ["AZURE_TENANT_ID"] = df_creds.collect()[0]["AZURE_TENANT_ID"]
+os.environ["AZURE_CLIENT_SECRET"] = df_creds.collect()[0]["AZURE_CLIENT_SECRET"]
+
+
+vault_url = "https://vaultforfabric.vault.azure.net/"
+credential = DefaultAzureCredential()
+client = SecretClient(vault_url=vault_url, credential=credential)
+
+reddit_id = client.get_secret("redditID").value
+reddit_secret = client.get_secret("redditSecret").value
+reddit_user_agent = client.get_secret("redditUserAgent").value
+server_password = client.get_secret("sql-server-password").value
+
+
+conn_str = (
+            f"DRIVER={{ODBC Driver 18 for SQL Server}};"
+            f"SERVER=tcp:myfreesqldbserver66.database.windows.net,1433;"
+            f"DATABASE=earthquake_analysis ;"
+            f"UID=admin2;"
+            f"PWD={server_password};"
+            f"Encrypt=yes;"
+            f"TrustServerCertificate=yes;"
+            f"Connect Timeout=30;"
+        )
+
 
 # METADATA ********************
 
@@ -71,7 +103,60 @@ end_date = date.today()
 
 # CELL ********************
 
-url = f"https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime={start_date}&endtime={end_date}"
+#testing...
+
+with pyodbc.connect(conn_str, autocommit=True) as conn:
+    with conn.cursor() as cursor:
+        cursor.execute("""
+            select 
+                top 1 event_date 
+            from 
+                [dbo].[gold_data]
+            order by 
+                event_date desc
+        """)
+
+          
+        while True:
+            result = cursor.fetchall()
+            if result:
+                print('first',result[0][0])
+            if not cursor.nextset():
+                break
+
+latest_date = result[0][0]
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
+
+#start_date = latest_date
+
+print(latest_date)
+print(type(latest_date))
+
+end_date = date.today()
+latest_date = end_date - timedelta(days=1)
+print(latest_date)
+print(type(latest_date))
+
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
+
+#url = f"https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime={latest_date}&endtime={end_date}"
+url = f"https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2025-12-26&endtime=2026-05-01"
 # assigned start and end dates to url for fetching yesterday's data
 
 try:
@@ -137,8 +222,8 @@ flat_data = [
 ]
 
 df = spark.createDataFrame(flat_data, schema=schema)
-#display(df)
-df.write.mode("overwrite").format("delta").saveAsTable(bronze_lh)  
+display(df)
+#df.write.mode("overwrite").format("delta").saveAsTable(bronze_lh)  
 
 # METADATA ********************
 
