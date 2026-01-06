@@ -14,6 +14,9 @@
 # META       "known_lakehouses": [
 # META         {
 # META           "id": "827c119c-aab3-497e-bbc7-c152d135d4af"
+# META         },
+# META         {
+# META           "id": "b76bd102-ec40-46f9-84b5-f67911b55ea0"
 # META         }
 # META       ]
 # META     }
@@ -45,23 +48,11 @@ from azure.keyvault.secrets import SecretClient
 
 # CELL ********************
 
-df_creds = spark.read.parquet('Files/creds')
-display(df_creds)
-
-# METADATA ********************
-
-# META {
-# META   "language": "python",
-# META   "language_group": "synapse_pyspark"
-# META }
-
-# CELL ********************
-
 tables_df = spark.sql("SHOW TABLES")
 table_list = [row['tableName'] for row in tables_df.collect()]
 db = "earthquake_analysis"
 
-df_creds = spark.read.parquet('Files/creds')
+df_creds = spark.read.parquet('abfss://Earthquake_Analysis@onelake.dfs.fabric.microsoft.com/Bronze_LH.Lakehouse/Files/creds')
 
 os.environ["AZURE_CLIENT_ID"] = df_creds.collect()[0]["AZURE_CLIENT_ID"]
 os.environ["AZURE_TENANT_ID"] = df_creds.collect()[0]["AZURE_TENANT_ID"]
@@ -287,8 +278,10 @@ for table in table_list:
 
 # CELL ********************
 
+'''
 df = spark.read.table('gold_data').where(col('event_date') == '2025-11-02')
 display(df)
+'''
 
 # METADATA ********************
 

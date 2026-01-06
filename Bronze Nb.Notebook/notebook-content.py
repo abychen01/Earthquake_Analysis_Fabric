@@ -137,13 +137,13 @@ latest_date = result[0][0]
 
 #start_date = latest_date
 
+latest_date = latest_date + timedelta(days=1)
 print(latest_date)
 print(type(latest_date))
 
 end_date = date.today()
-latest_date = end_date - timedelta(days=1)
-print(latest_date)
-print(type(latest_date))
+print(end_date)
+print(type(end_date))
 
 
 # METADATA ********************
@@ -155,8 +155,8 @@ print(type(latest_date))
 
 # CELL ********************
 
-#url = f"https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime={latest_date}&endtime={end_date}"
-url = f"https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2025-12-26&endtime=2026-05-01"
+url = f"https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime={latest_date}&endtime={end_date}"
+#url = f"https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2025-12-27&endtime=2026-05-01"
 # assigned start and end dates to url for fetching yesterday's data
 
 try:
@@ -187,6 +187,9 @@ except requests.exceptions.RequestException as e:
 
 import json
 from pyspark.sql.types import StructType, StructField, StringType, DoubleType, LongType
+from pyspark.sql.functions import when, col, to_timestamp, to_date, date_format, isnull
+from pyspark.sql.types import TimestampType
+
 
 schema = StructType([
     StructField("id", StringType(), True),
@@ -222,8 +225,9 @@ flat_data = [
 ]
 
 df = spark.createDataFrame(flat_data, schema=schema)
-display(df)
-#df.write.mode("overwrite").format("delta").saveAsTable(bronze_lh)  
+
+#display(df)
+df.write.mode("overwrite").format("delta").saveAsTable(bronze_lh)  
 
 # METADATA ********************
 
