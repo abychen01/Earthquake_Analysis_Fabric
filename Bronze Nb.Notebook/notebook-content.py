@@ -63,7 +63,6 @@ from datetime import date, timedelta
 
 # CELL ********************
 
-#temp...
 
 df_creds = spark.read.parquet('Files/creds')
 
@@ -103,7 +102,7 @@ conn_str = (
 
 # CELL ********************
 
-#testing...
+
 
 with pyodbc.connect(conn_str, autocommit=True) as conn:
     with conn.cursor() as cursor:
