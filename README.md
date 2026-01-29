@@ -1,4 +1,4 @@
-ccffdd# Earthquake Data Pipeline
+dccffdd# Earthquake Data Pipeline
 
 This repository contains a data engineering project that fetches earthquake data from the USGS Earthquake API, processes it through a Bronze-Silver-Gold medallion architecture using Microsoft Fabric notebooks, and stores the results in Delta tables. The project also includes a historical data notebook and a date dimension table created with Fabric Dataflow Gen 2.
 
